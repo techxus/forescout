@@ -34,6 +34,8 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 @Service
 @Slf4j
@@ -87,6 +89,41 @@ public class KeyStoreService {
 
     @PostConstruct
     public PublicKey getPublicKey() throws Exception {
+
+
+        KeyClient keyClient = new KeyClientBuilder()
+                .vaultUrl("https://techxus-kv.vault.azure.net")
+                .credential(new DefaultAzureCredentialBuilder().build())
+                .buildClient();
+
+        KeyVaultKey key = keyClient.getKey("FORESCOUT-PFX-TEST-CERT");
+        RSAPublicKey publicKey1 = (RSAPublicKey) key.getKey().toRsa().getPublic();
+        RSAPrivateKey privateKey = (RSAPrivateKey) key.getKey().toRsa().getPrivate();
+        CryptographyClient cryptoClient1 = new CryptographyClientBuilder()
+                .keyIdentifier(key.getId())
+                .credential(new DefaultAzureCredentialBuilder().build())
+                .buildClient();
+
+
+        //Algorithm algorithm = Algorithm.RSA256(publicKey1, privateKey);  // Use the public key for signing algorithm setup
+        String token1 = JWT.create()
+                .withSubject("subject")
+                .withIssuer("https://www.example.com")
+                .sign(Algorithm.none());  // This should be unsigned initially if using Azure to sign
+
+        // Perform signing operation in Azure Key Vault
+        byte[] signature1 = cryptoClient1.signData(com.azure.security.keyvault.keys.cryptography.models.SignatureAlgorithm.RS256, token1.getBytes()).getSignature();
+        String test1 = token1 + "." + Base64.getUrlEncoder().encodeToString(signature1);
+
+
+
+
+
+
+
+
+
+
 
         CryptographyClient cryptoClient = new CryptographyClientBuilder()
                 .keyIdentifier("https://techxus-kv.vault.azure.net/keys/FORESCOUT-TEST-KEY")
