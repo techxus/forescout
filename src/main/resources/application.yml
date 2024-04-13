@@ -7,15 +7,14 @@ server:
   servlet:
     context-path: /riskshareservice
 
-
 spring:
   application:
     name: riskshareservice
 
   datasource:
-    url:  jdbc:postgresql://c-techxus-cosmosdb-postgres-cluster.yrxejduv5ovblh.postgres.cosmos.azure.com:5432/forescout?sslmode=require
-    username: citus
-    password: 2Likethat#
+    url: "${PG-DB-URL}"
+    username: "${PG-DB-USER}"
+    password: "${PG-DB-PSWD}"
     driver-class-name: org.postgresql.Driver
 
   jpa:

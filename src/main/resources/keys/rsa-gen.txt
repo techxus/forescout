@@ -1,0 +1,12 @@
+# Generate RSA Key Pair and Certificate
+
+# Generate a private key
+openssl genrsa -out private_key.pem 2048
+
+# Create a certificate signing request (CSR) for the private key
+#openssl req -new -key private_key.pem -out certificate.csr -subj "/C=US/ST=New York/L=New York/O=Example Corp/CN=www.example.com"
+openssl req -new -key private_key.pem -out certificate.csr -subj "/C=US/ST=New York/L=New York/O=Forescout/CN=www.forescout.com"
+
+# Generate a self-signed certificate with the CSR
+openssl x509 -req -days 365 -in certificate.csr -signkey private_key.pem -out public_cert.pem
+

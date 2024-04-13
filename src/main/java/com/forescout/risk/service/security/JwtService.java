@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.security.Key;
@@ -17,7 +18,9 @@ import java.util.function.Function;
 @Service
 @Slf4j
 public class JwtService {
-    public static final String SECRET = "357638792F423F4428472B4B6250655368566D597133743677397A2443264629";
+
+    @Value("${JWT-TOKEN-SECRET}")
+    private String jwtSecretKey;
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -50,11 +53,7 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, username);
     }
-
-
-
     private String createToken(Map<String, Object> claims, String username) {
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -62,9 +61,8 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis()+1000*60*30))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
-
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

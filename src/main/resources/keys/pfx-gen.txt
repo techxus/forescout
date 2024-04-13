@@ -1,0 +1,9 @@
+# Generate a new private key and certificate signing request (CSR)
+openssl req -newkey rsa:2048 -nodes -keyout privateKey.key -x509 -days 365 -out certificate.crt
+
+# Convert the certificate to PEM format (if not already in PEM format)
+openssl x509 -outform pem -in certificate.crt -out certificate.pem
+
+# Create a PKCS#12 (PFX) file from the private key and PEM certificate
+openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.pem -password pass:YourStrongPassword
+
