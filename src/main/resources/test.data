@@ -1,0 +1,36 @@
+-- Create roles table
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(255) UNIQUE NOT NULL
+);
+
+-- Create users table
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+
+-- Create user_roles join table
+CREATE TABLE user_roles (
+    user_id INT,
+    role_id INT,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES roles (role_id) ON DELETE CASCADE
+);
+
+-- Insert roles
+INSERT INTO roles (id, name) VALUES (1, 'ADMIN');
+INSERT INTO roles (id, name) VALUES (2, 'VIEWER');
+INSERT INTO roles (id, name) VALUES (3, 'EDITOR');
+
+update roles set name = 'EDITOR' where id = 2;
+
+-- Insert a user: password123
+INSERT INTO users (id, username, password) VALUES (2, 'forescout', '$2a$10$ChSjxqGHLsn8c6wkGVDcRex3nVkRiVj5ksSnoQJk/Xb9eAHFdMJPW');
+INSERT INTO users (id, username, password) VALUES (3, 'admin', '$2a$10$ChSjxqGHLsn8c6wkGVDcRex3nVkRiVj5ksSnoQJk/Xb9eAHFdMJPW');
+
+-- Assign roles to the user
+INSERT INTO users_roles (user_entity_id, roles_id) VALUES (3, 1);

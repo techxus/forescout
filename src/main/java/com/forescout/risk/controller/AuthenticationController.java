@@ -24,18 +24,25 @@ public class AuthenticationController {
     private final JwtService jwtService;
 
     @PostMapping("/api/v1/login")
-    public JwtResponseDTO AuthenticateAndGetToken(@RequestBody AuthRequestDTO authRequestDTO){
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
-        if(authentication.isAuthenticated()){
-            return JwtResponseDTO.builder()
-                    .accessToken(jwtService.GenerateToken(authRequestDTO.getUsername()))
-                    .build();
-        } else {
-            throw new UsernameNotFoundException("invalid user request..!!");
+    public JwtResponseDTO AuthenticateAndGetToken(@RequestBody AuthRequestDTO authRequestDTO) {
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
+            if (authentication.isAuthenticated()) {
+                return JwtResponseDTO.builder()
+                        .accessToken(jwtService.GenerateToken(authRequestDTO.getUsername()))
+                        .build();
+            } else {
+                throw new UsernameNotFoundException("invalid user request..!!");
+            }
+        }
+        catch(Exception exx) {
+            log.error("Exception {}", exx);
+            throw exx;
         }
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/ping")
     public String test() {
         try {

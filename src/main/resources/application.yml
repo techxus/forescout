@@ -3,9 +3,10 @@
 #  https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/using-event-hubs-in-spring-applications
 # ===================================================================
 server:
+  port: 8085
   servlet:
     context-path: /riskshareservice
-    port: 8085
+
 
 spring:
   application:
