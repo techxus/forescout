@@ -1,0 +1,64 @@
+# ===================================================================
+# Spring Boot Configuration
+#  https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/using-event-hubs-in-spring-applications
+# ===================================================================
+server:
+  servlet:
+    context-path: /riskshareservice
+    port: 8085
+
+spring:
+  application:
+    name: riskshareservice
+
+  datasource:
+    url:  jdbc:postgresql://c-techxus-cosmosdb-postgres-cluster.yrxejduv5ovblh.postgres.cosmos.azure.com:5432/forescout?sslmode=require
+    username: citus
+    password: 2Likethat#
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    hibernate.ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+# using JMS: https://learn.microsoft.com/en-us/azure/developer/java/spring-framework/using-service-bus-in-spring-applications
+  jms:
+    servicebus:
+      connection-string: "Endpoint=sb://texhxus-service-bus.servicebus.windows.net/;SharedAccessKeyName=TechxusQueuePolicy;SharedAccessKey=Zc2pruue4vXy1yxfYvoqlsjD98OPnJAat+ASbIqtegE=;EntityPath=techxus-forescout-risk-queue"
+      pricing-tier: Standard
+
+  cloud:
+    azure:
+      keyvault:
+        secret:
+          property-sources[0]:
+            endpoint: https://techxus-kv.vault.azure.net/
+
+## if Not using JMS
+#azure:
+#  servicebus:
+#    connection-string: "Endpoint=sb://texhxus-service-bus.servicebus.windows.net/;SharedAccessKeyName=TechxusQueuePolicy;SharedAccessKey=Zc2pruue4vXy1yxfYvoqlsjD98OPnJAat+ASbIqtegE=;EntityPath=techxus-forescout-risk-queue"
+#    queue-name: techxus-forescout-risk-queue
+
+# if using mTLS
+#  port: 8443
+#  ssl:
+#    key-store: classpath:cert/server.p12
+#    key-store-password: 2Likethat#
+#    key-store-type: PKCS12
+#    client-auth: NEED
+#    trust-store: classpath:cert/truststore.p12
+#    trust-store-password: 2Likethat#
+#    trust-store-type: PKCS12
+
+logging:
+  level:
+    ROOT: INFO
+    com.forescout.risk: INFO
+
+
+
